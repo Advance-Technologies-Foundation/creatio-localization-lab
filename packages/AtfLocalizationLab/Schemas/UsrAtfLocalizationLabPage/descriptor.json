@@ -1,0 +1,13 @@
+{
+  "Descriptor": {
+    "UId": "6ebd24e9-2712-4b7c-84c9-66a276b149f7",
+    "Name": "UsrAtfLocalizationLabPage",
+    "ModifiedOnUtc": "/Date(1787396508000)/",
+    "Parent": {
+      "UId": "f691e828-0b36-42a7-898f-c337e9af67d0",
+      "Name": "BlankPageTemplate"
+    },
+    "ManagerName": "ClientUnitSchemaManager",
+    "Caption": "Localization lab"
+  }
+}

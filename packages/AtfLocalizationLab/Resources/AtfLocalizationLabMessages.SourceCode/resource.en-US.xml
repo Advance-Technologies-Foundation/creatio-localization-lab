@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Resources Culture="en-US">
+	<Group Type="String">
+		<Items>
+			<Item Name="Caption" Value="Localization lab backend messages" />
+			<Item Name="LocalizableStrings.SharedGreeting.Value" Value="Hello from the localization lab" />
+			<Item Name="LocalizableStrings.DefaultOnly.Value" Value="Available only in the default language" />
+		</Items>
+	</Group>
+</Resources>

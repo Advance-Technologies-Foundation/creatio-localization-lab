@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Resources Culture="es-ES">
+	<Group Type="String">
+		<Items>
+			<Item Name="Caption" Value="Mensajes de backend del laboratorio de localización" />
+			<Item Name="LocalizableStrings.SharedGreeting.Value" Value="Hola desde el laboratorio de localización" />
+		</Items>
+	</Group>
+</Resources>

@@ -1,0 +1,23 @@
+= MetaData.Schema.UId "6ebd24e9-2712-4b7c-84c9-66a276b149f7"
+= MetaData.Schema.A2 "UsrAtfLocalizationLabPage"
+= MetaData.Schema.A5 "7b9ecbcd-8066-40a6-bfd6-e302d7ea6e5d"
++ MetaData.Schema.B2 {
+  "UId": "7ec0e317-1285-47f3-9dcc-50a3d6e69f50",
+  "A2": "PageGreeting",
+  "A3": "6ebd24e9-2712-4b7c-84c9-66a276b149f7",
+  "A4": "6ebd24e9-2712-4b7c-84c9-66a276b149f7",
+  "A5": "7b9ecbcd-8066-40a6-bfd6-e302d7ea6e5d"
+}
++ MetaData.Schema.B2 {
+  "UId": "19f28188-edc2-4dc3-9492-aec5eda03caa",
+  "A2": "PageDefaultOnly",
+  "A3": "6ebd24e9-2712-4b7c-84c9-66a276b149f7",
+  "A4": "6ebd24e9-2712-4b7c-84c9-66a276b149f7",
+  "A5": "7b9ecbcd-8066-40a6-bfd6-e302d7ea6e5d"
+}
+= MetaData.Schema.B6 "d6014583-bb03-43a0-a62f-b3185a12ef04"
+= MetaData.Schema.B8 "10.1.585.0"
+= MetaData.Schema.HD1 "f691e828-0b36-42a7-898f-c337e9af67d0"
++ MetaData.Schema.HD15 1
+= MetaData.Schema.HD6 "define('{0}Structure', ['{0}Resources'], function(resources) {{return {{schemaUId:'{2}',schemaName:'{3}',parentSchemaUId:'{4}',extendParent:{5},type:Terrasoft.SchemaType.ANGULAR_SCHEMA,entitySchema:'',name:'',extend:'Terrasoft.model.BaseViewModel',schema:{{leftPanel:[],rightPanel:[],actions:[],analytics:[]}},methods:{{}},controlsConfig:{{}},customBindings:{{}},bindings:{{}},parameters:{{}},schemaVersion:0,optionalProperties:{{}},schemaDifferences:function(){{\n{1}\n}}}};}});"
++ MetaData.Schema.B7 false
