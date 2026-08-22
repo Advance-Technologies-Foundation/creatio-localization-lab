@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Resources Culture="en-US">
+	<Group Type="String">
+		<Items>
+			<Item Name="Caption" Value="Localization lab" />
+			<Item Name="Description" Value="Demonstrates schema-owned Freedom UI localizable values" />
+			<Item Name="LocalizableStrings.PageGreeting.Value" Value="Hello from the Freedom UI page" />
+			<Item Name="LocalizableStrings.PageDefaultOnly.Value" Value="This page text exists only in the default language" />
+		</Items>
+	</Group>
+</Resources>

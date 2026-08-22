@@ -1,0 +1,19 @@
+<Project>
+    <ItemGroup Condition="'$(PkgPath)' != ''">
+        <Compile Remove="$(PkgPath)/AtfLocalizationLab/Assemblies/**" />
+        <Compile Remove="$(PkgPath)/AtfLocalizationLab/Data/**" />
+        <Compile Remove="$(PkgPath)/AtfLocalizationLab/SqlScripts/**" />
+        <Compile Remove="$(PkgPath)/AtfLocalizationLab/Schemas\**" />
+        <Compile Remove="$(PkgPath)/AtfLocalizationLab/Resources/**" />
+        <EmbeddedResource Remove="$(PkgPath)/AtfLocalizationLab/Assemblies/**" />
+        <EmbeddedResource Remove="$(PkgPath)/AtfLocalizationLab/Data/**" />
+        <EmbeddedResource Remove="$(PkgPath)/AtfLocalizationLab/SqlScripts/**" />
+        <EmbeddedResource Remove="$(PkgPath)/AtfLocalizationLab/Schemas/**" />
+        <EmbeddedResource Remove="$(PkgPath)/AtfLocalizationLab/Resources/**" />
+        <None Remove="$(PkgPath)/AtfLocalizationLab/Assemblies/**" />
+        <None Remove="$(PkgPath)/AtfLocalizationLab/Data/**" />
+        <None Remove="$(PkgPath)/AtfLocalizationLab/SqlScripts/**" />
+        <None Remove="$(PkgPath)/AtfLocalizationLab/Schemas/**" />
+        <None Remove="$(PkgPath)/AtfLocalizationLab/Resources/**" />
+    </ItemGroup>
+</Project>

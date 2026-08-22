@@ -1,0 +1,28 @@
+**/.vscode
+**/.vs
+**/.idea
+
+**/.application
+**/.solution
+**/.nuget
+**/*.user
+
+**/[O-o]bj
+**/[B-b]in
+**/TestResults
+
+**\workspaceEnvironmentSettings.json
+
+# Keep the cultures demonstrated by this lab
+**/resource.??-??.xml
+!**/resource.en-US.xml
+!**/resource.es-ES.xml
+
+# We only keep en-US data
+**/data.??-??.json
+!**/data.en-US.json
+
+# Operator-only lifecycle scenarios must stay outside the published lab.
+Phase1.yaml
+Phase2.yaml
+Phase3.yaml

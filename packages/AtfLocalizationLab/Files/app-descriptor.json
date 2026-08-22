@@ -1,0 +1,21 @@
+{
+  "Name": "AtfLocalizationLab",
+  "Description": "Demonstrates schema-owned localizable values, injectable backend resolution, and Freedom UI localization in Creatio.",
+  "Maintainer": "Advance Technologies Foundation",
+  "Icon": "",
+  "IconName": "",
+  "Color": "#FFAC07",
+  "Version": "1.0.0",
+  "RequiredPlatformVersion": "8.3.3",
+  "MarketplaceLink": "",
+  "HelpLink": "https://github.com/Advance-Technologies-Foundation/creatio-localization-lab",
+  "OrderLink": "",
+  "SupportEmail": "",
+  "Code": "AtfLocalizationLab",
+  "Packages": [
+    {
+      "UId": "d6014583-bb03-43a0-a62f-b3185a12ef04",
+      "Name": "AtfLocalizationLab"
+    }
+  ]
+}
