@@ -34,6 +34,13 @@ namespace AtfLocalizationLab.Tests
 				var declaredNames = declarations.Select(item => item.GetProperty("A2").GetString()).ToArray();
 				declaredNames.Should().Contain(new[] { "SharedGreeting", "DefaultOnly" },
 					because: "the normal backend values must be discoverable and editable in the designer");
+				declaredNames.Should().NotContain("XmlOnlyProbe", because: "the XML-only diagnostic must remain absent from the designer collection");
+				declarations.Select(item => item.GetProperty("UId").GetString()).Should().OnlyHaveUniqueItems(
+					because: "each designer declaration needs its own stable identity");
+				foreach (string culture in new[] { "en-US", "es-ES" }) {
+					FindValue(LoadResource("UsrAtfLocalizationLabMessages.SourceCode", culture), "LocalizableStrings.MetadataOnlyProbe.Value")
+						.Should().BeNull(because: "the metadata-only diagnostic must have no resource text");
+				}
 				foreach (JsonElement item in declarations) {
 					item.GetProperty("A3").GetString().Should().Be(schema.GetProperty("UId").GetString(), because: "these declarations originate in this schema");
 					item.GetProperty("A4").GetString().Should().Be(schema.GetProperty("UId").GetString(), because: "these declarations are modified in this schema");

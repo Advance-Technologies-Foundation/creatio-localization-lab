@@ -53,7 +53,8 @@ CLR class in its C# body.
 Open the `UsrAtfLocalizationLabMessages` source-code schema in Configuration and inspect **Localizable
 strings**. Both normal keys must be visible. Save and reopen the schema, then verify English/Spanish
 values and the intentional Spanish omission for `DefaultOnly`. A backend lookup alone is not proof
-of designer integration.
+of designer integration. The verified path for this repair was the native designer service
+round trip; visual Configuration navigation was blocked. See [validation boundaries](docs/localizable-metadata-validation.md).
 
 The extra `RegisteredProbe`, `XmlOnlyProbe`, and `MetadataOnlyProbe` keys are **diagnostics**, not
 recommended application patterns. They distinguish declarations from resource storage:

@@ -47,25 +47,28 @@ namespace AtfLocalizationLab.Tests
 				cultureName
 			});
 
-			// Act
-			ProcessResult process = RunClio("call-service", "-e", environmentName, "-m", "POST",
-				"--service-path", "/rest/AtfLocalizationLabService/Resolve", "-b", body, "-d", destination);
-			process.ExitCode.Should().Be(0, because: "the deployed endpoint must succeed before its response is parsed: {0}", process.Output);
-			Resolution resolution = null;
-			if (File.Exists(destination)) {
-				resolution = JsonSerializer.Deserialize<Resolution>(File.ReadAllText(destination), JsonOptions);
-			}
+			try {
+				// Act
+				ProcessResult process = RunClio("call-service", "-e", environmentName, "-m", "POST",
+					"--service-path", "/rest/AtfLocalizationLabService/Resolve", "-b", body, "-d", destination);
+				process.ExitCode.Should().Be(0, because: "the deployed endpoint must succeed before its response is parsed: {0}", process.Output);
+				Resolution resolution = null;
+				if (File.Exists(destination)) {
+					resolution = JsonSerializer.Deserialize<Resolution>(File.ReadAllText(destination), JsonOptions);
+				}
 
-			// Assert
-			process.ExitCode.Should().Be(0, because: "clio must call the deployed lab endpoint: {0}",
-				process.Output);
-			resolution.Should().NotBeNull(because: "the endpoint must return a JSON resolution result");
-			resolution.CurrentCultureValue.Should().Be(expectedFallback,
-				because: "the Value path must resolve under the requested execution culture with fallback");
-			resolution.StrictValue.Should().Be(expectedStrict,
-				because: "strict lookup must not silently fall back");
-			resolution.FallbackValue.Should().Be(expectedFallback,
-				because: "fallback lookup must use Creatio's configured fallback behavior");
+				// Assert
+				resolution.Should().NotBeNull(because: "the endpoint must return a JSON resolution result");
+				resolution.CurrentCultureValue.Should().Be(expectedFallback,
+					because: "the Value path must resolve under the requested execution culture with fallback");
+				resolution.StrictValue.Should().Be(expectedStrict,
+					because: "strict lookup must not silently fall back");
+				resolution.FallbackValue.Should().Be(expectedFallback,
+					because: "fallback lookup must use Creatio's configured fallback behavior");
+			}
+			finally {
+				File.Delete(destination);
+			}
 		}
 
 		[Test]
