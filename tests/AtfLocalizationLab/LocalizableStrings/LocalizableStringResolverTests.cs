@@ -14,7 +14,7 @@ namespace AtfLocalizationLab.Tests.LocalizableStrings {
 	[Category("Implementation")]
 	public sealed class LocalizableStringResolverTests : BaseComposableAppTestFixture {
 
-		private const string ResourceSchemaName = "AtfLocalizationLabMessages";
+		private const string ResourceSchemaName = "UsrAtfLocalizationLabMessages";
 		private const string ResourceItemName = "LocalizableStrings.SharedGreeting.Value";
 		private static readonly CultureInfo SpanishCulture = CultureInfo.GetCultureInfo("es-ES");
 
