@@ -15,15 +15,21 @@ namespace AtfLocalizationLab.Tests
 			PropertyNameCaseInsensitive = true
 		};
 
-		[TestCase("AtfLocalizationLabMessages", "LocalizableStrings.SharedGreeting.Value", "es-ES",
+		[TestCase("UsrAtfLocalizationLabMessages", "LocalizableStrings.SharedGreeting.Value", "es-ES",
 			"Hola desde el laboratorio de localización", "Hola desde el laboratorio de localización")]
-		[TestCase("AtfLocalizationLabMessages", "LocalizableStrings.DefaultOnly.Value", "es-ES",
+		[TestCase("UsrAtfLocalizationLabMessages", "LocalizableStrings.DefaultOnly.Value", "es-ES",
 			null, "Available only in the default language")]
 		[TestCase("UsrAtfLocalizationLabPage", "LocalizableStrings.PageGreeting.Value", "es-ES",
 			"Hola desde la página Freedom UI", "Hola desde la página Freedom UI")]
 		[TestCase("UsrAtfLocalizationLabPage", "LocalizableStrings.PageDefaultOnly.Value", "es-ES",
 			null, "This page text exists only in the default language")]
-		[TestCase("AtfLocalizationLabMessages", "LocalizableStrings.MissingKey.Value", "es-ES", null, null)]
+		[TestCase("UsrAtfLocalizationLabMessages", "LocalizableStrings.MissingKey.Value", "es-ES", null, null)]
+		[TestCase("UsrAtfLocalizationLabMessages", "LocalizableStrings.RegisteredProbe.Value", "en-US", "registered-en-US-1619", "registered-en-US-1619")]
+		[TestCase("UsrAtfLocalizationLabMessages", "LocalizableStrings.RegisteredProbe.Value", "es-ES", "registered-es-ES-1619", "registered-es-ES-1619")]
+		[TestCase("UsrAtfLocalizationLabMessages", "LocalizableStrings.XmlOnlyProbe.Value", "en-US", "xml-only-en-US-1619", "xml-only-en-US-1619")]
+		[TestCase("UsrAtfLocalizationLabMessages", "LocalizableStrings.XmlOnlyProbe.Value", "es-ES", "xml-only-es-ES-1619", "xml-only-es-ES-1619")]
+		[TestCase("UsrAtfLocalizationLabMessages", "LocalizableStrings.MetadataOnlyProbe.Value", "en-US", null, null)]
+		[TestCase("UsrAtfLocalizationLabMessages", "LocalizableStrings.MetadataOnlyProbe.Value", "es-ES", null, null)]
 		[Description("A deployed package exposes Creatio strict and fallback localization behavior.")]
 		public void Resolve_ReturnsExpectedStrictAndFallbackValues(string schemaName, string itemName,
 			string cultureName, string expectedStrict, string expectedFallback)
@@ -44,6 +50,7 @@ namespace AtfLocalizationLab.Tests
 			// Act
 			ProcessResult process = RunClio("call-service", "-e", environmentName, "-m", "POST",
 				"--service-path", "/rest/AtfLocalizationLabService/Resolve", "-b", body, "-d", destination);
+			process.ExitCode.Should().Be(0, because: "the deployed endpoint must succeed before its response is parsed: {0}", process.Output);
 			Resolution resolution = null;
 			if (File.Exists(destination)) {
 				resolution = JsonSerializer.Deserialize<Resolution>(File.ReadAllText(destination), JsonOptions);
@@ -59,6 +66,88 @@ namespace AtfLocalizationLab.Tests
 				because: "strict lookup must not silently fall back");
 			resolution.FallbackValue.Should().Be(expectedFallback,
 				because: "fallback lookup must use Creatio's configured fallback behavior");
+		}
+
+		[Test]
+		[Description("Source-code designer discovery lists B2 declarations, independently of backend XML resource lookup.")]
+		public void GetSchema_ShouldExposeOnlyDeclaredStrings_WhenResourcesContainUndeclaredKeys()
+		{
+			// Arrange
+			string environmentName = Environment.GetEnvironmentVariable("CLIO_ENVIRONMENT");
+			if (string.IsNullOrWhiteSpace(environmentName)) {
+				Assert.Ignore("Set CLIO_ENVIRONMENT to run Creatio-backed localization tests.");
+			}
+			string destination = Path.Combine(Path.GetTempPath(), "localization-designer-" + Guid.NewGuid().ToString("N") + ".json");
+			try {
+				// Act
+				ProcessResult process = RunClio("call-service", "-e", environmentName, "-m", "POST",
+					"--service-path", "ServiceModel/SourceCodeSchemaDesignerService.svc/GetSchema",
+					"-b", "{\"schemaUId\":\"0e340e9b-6657-44da-8f3a-a29ea6344519\"}", "-d", destination);
+				// Assert
+				process.ExitCode.Should().Be(0, because: "the platform designer must return the deployed schema: {0}", process.Output);
+				using (JsonDocument response = JsonDocument.Parse(File.ReadAllText(destination))) {
+					JsonElement strings = response.RootElement.GetProperty("schema").GetProperty("localizableStrings");
+					strings.GetArrayLength().Should().Be(4, because: "normal backend strings and the two declared diagnostic entries belong to the designer collection");
+					foreach (JsonElement item in strings.EnumerateArray()) {
+						string name = item.GetProperty("name").GetString();
+						name.Should().BeOneOf(new[] { "SharedGreeting", "DefaultOnly", "RegisteredProbe", "MetadataOnlyProbe" }, because: "normal strings must be discoverable and XML-only diagnostics are not declarations");
+						int expectedCount = 2;
+						if (name == "MetadataOnlyProbe") {
+							expectedCount = 0;
+						}
+						else if (name == "DefaultOnly") {
+							expectedCount = 1;
+						}
+						item.GetProperty("values").GetArrayLength().Should().Be(expectedCount,
+							because: "B2 declares the item while resource files supply its translated text");
+					}
+				}
+			}
+			finally {
+				File.Delete(destination);
+			}
+		}
+
+		[Test]
+		[NonParallelizable]
+		[Description("The native source-code designer save preserves registered backend translations and item identities.")]
+		public void SaveSchema_ShouldPreserveRegisteredTranslations_WhenSavingLoadedSchema()
+		{
+			// Arrange
+			string environmentName = Environment.GetEnvironmentVariable("CLIO_ENVIRONMENT");
+			if (string.IsNullOrWhiteSpace(environmentName)) {
+				Assert.Ignore("Set CLIO_ENVIRONMENT to an exclusive, writable lab to run Creatio-backed tests.");
+			}
+			string destination = Path.Combine(Path.GetTempPath(), "localization-save-" + Guid.NewGuid().ToString("N") + ".json");
+			try {
+				ProcessResult load = RunClio("call-service", "-e", environmentName, "-m", "POST", "--service-path",
+					"ServiceModel/SourceCodeSchemaDesignerService.svc/GetSchema", "-b",
+					"{\"schemaUId\":\"0e340e9b-6657-44da-8f3a-a29ea6344519\"}", "-d", destination);
+				load.ExitCode.Should().Be(0, because: "the round trip needs a successfully loaded native schema: {0}", load.Output);
+				using (JsonDocument before = JsonDocument.Parse(File.ReadAllText(destination))) {
+					JsonElement schema = before.RootElement.GetProperty("schema");
+					schema.GetProperty("isReadOnly").GetBoolean().Should().BeFalse(because: "the disposable lab package must be unlocked for a real designer save");
+					// Act
+					ProcessResult save = RunClio("call-service", "-e", environmentName, "-m", "POST", "--service-path",
+						"ServiceModel/SourceCodeSchemaDesignerService.svc/SaveSchema", "-b", schema.GetRawText(), "-d", destination);
+					// Assert
+					save.ExitCode.Should().Be(0, because: "the native designer must accept the save: {0}", save.Output);
+					using (JsonDocument saved = JsonDocument.Parse(File.ReadAllText(destination))) {
+						saved.RootElement.GetProperty("success").GetBoolean().Should().BeTrue(because: "HTTP success alone does not prove a schema was saved");
+					}
+					ProcessResult reload = RunClio("call-service", "-e", environmentName, "-m", "POST", "--service-path",
+						"ServiceModel/SourceCodeSchemaDesignerService.svc/GetSchema", "-b",
+						"{\"schemaUId\":\"0e340e9b-6657-44da-8f3a-a29ea6344519\"}", "-d", destination);
+					reload.ExitCode.Should().Be(0, because: "the saved schema must be independently reloaded: {0}", reload.Output);
+					using (JsonDocument after = JsonDocument.Parse(File.ReadAllText(destination))) {
+						after.RootElement.GetProperty("schema").GetProperty("localizableStrings").GetRawText()
+							.Should().Be(schema.GetProperty("localizableStrings").GetRawText(), because: "saving must preserve declaration identities, both translations, and default-only omissions");
+					}
+				}
+			}
+			finally {
+				File.Delete(destination);
+			}
 		}
 
 		[Test]

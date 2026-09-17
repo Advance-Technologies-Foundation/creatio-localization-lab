@@ -1,0 +1,45 @@
+﻿{
+  "MetaData": {
+    "Schema": {
+      "ManagerName": "SourceCodeSchemaManager",
+      "UId": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+      "A2": "UsrAtfLocalizationLabMessages",
+      "A5": "d6014583-bb03-43a0-a62f-b3185a12ef04",
+      "B1": [],
+      "B2": [
+        {
+          "UId": "2bcb7f54-901e-47b8-a57c-3c0c31eaa601",
+          "A2": "RegisteredProbe",
+          "A3": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+          "A4": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+          "A5": "d6014583-bb03-43a0-a62f-b3185a12ef04"
+        },
+        {
+          "UId": "2bcb7f54-901e-47b8-a57c-3c0c31eaa602",
+          "A2": "MetadataOnlyProbe",
+          "A3": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+          "A4": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+          "A5": "d6014583-bb03-43a0-a62f-b3185a12ef04"
+        },
+        {
+          "UId": "49c56e04-61b2-4fbc-8261-64e881b605a1",
+          "A2": "SharedGreeting",
+          "A3": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+          "A4": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+          "A5": "d6014583-bb03-43a0-a62f-b3185a12ef04"
+        },
+        {
+          "UId": "49c56e04-61b2-4fbc-8261-64e881b605a2",
+          "A2": "DefaultOnly",
+          "A3": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+          "A4": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+          "A5": "d6014583-bb03-43a0-a62f-b3185a12ef04"
+        }
+      ],
+      "B3": [],
+      "B6": "d6014583-bb03-43a0-a62f-b3185a12ef04",
+      "B8": "10.1.585.0",
+      "HD1": "50e3acc0-26fc-4237-a095-849a1d534bd3"
+    }
+  }
+}

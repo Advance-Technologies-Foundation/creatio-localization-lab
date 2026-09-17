@@ -40,7 +40,7 @@ Every localizable value MUST belong to a Creatio schema.
 
 - Put a page value on the page schema that renders it.
 - Put process, object, and other schema-specific values on their natural owning schema.
-- Use `AtfLocalizationLabMessages` only for package-level backend values that have no more natural owner.
+- Use `UsrAtfLocalizationLabMessages` only for package-level backend values that have no more natural owner.
 - Do not turn the source-code schema into a package-wide registry for unrelated strings.
 - Persist resource items as `LocalizableStrings.<Key>.Value`.
 - Freedom UI code binds page values as `$Resources.Strings.<Key>`.
@@ -132,7 +132,7 @@ Before presenting the lab for inspection:
 2. Build with zero errors.
 3. Pass `ResourceContent` and `Implementation` independently.
 4. Pass the combined 100% coverage gate.
-5. Run the six `Creatio` tests when the dedicated environment is available.
+5. Run the `Creatio` tests when the dedicated environment is available.
 6. Confirm all `using` directives precede namespaces.
 7. Confirm the English and Spanish screenshots still match the demonstrated Freedom UI behavior when UI
    resources change.

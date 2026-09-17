@@ -18,3 +18,9 @@ Decision: Make `AGENTS.md` specific to this independent lab, including schema ow
 Discovery: The lab's single supported solution entry point and three-category test contract are small enough to state directly without generic workspace or deployment guidance.
 Files: AGENTS.md
 Impact: Future contributors receive the same constraints used to approve and verify the reference snapshot.
+
+## 2026-09-17 - Backend B2 declarations versus resource lookup
+Direct backend LocalizableString lookup resolves XML-only keys with no B2 declaration on Creatio 10.1.585.0, .NET 8, PostgreSQL in FSM. Source-code designer GetSchema exposes only B2-declared items; metadata without XML has no values. See docs/localizable-metadata-validation.md for scope and deterministic tests. An empty owner CLR class duplicated in generated source caused CS0101; the schema itself remains the resource owner without a CLR class. Local research only; not published.
+
+## 2026-09-17 - Designer-save acceptance
+The repair registers normal strings in B2 and renames their schema to UsrAtfLocalizationLabMessages while preserving its UId, because native SaveSchema enforces the configured Usr prefix. Fourteen disposable-instance tests now verify runtime lookup and native designer discovery/save/readback. Nineteen stand-free tests retain 100% production coverage. The instance was removed and absence verified. Configuration browser navigation was blocked; the evidence is native service readback, not a visual claim.

@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Xml.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -20,18 +21,27 @@ namespace AtfLocalizationLab.Tests
 		public void BackendResources_AreOwnedBySourceCodeSchema()
 		{
 			// Arrange
-			string source = File.ReadAllText(Path.Combine(PackageRoot, "Schemas",
-				"AtfLocalizationLabMessages", "AtfLocalizationLabMessages.cs"));
-			XDocument resources = LoadResource("AtfLocalizationLabMessages.SourceCode", "en-US");
+			using (JsonDocument metadata = JsonDocument.Parse(File.ReadAllText(Path.Combine(PackageRoot, "Schemas",
+				"UsrAtfLocalizationLabMessages", "metadata.json")))) {
+				XDocument resources = LoadResource("UsrAtfLocalizationLabMessages.SourceCode", "en-US");
 
-			// Act
-			string greeting = FindValue(resources, "LocalizableStrings.SharedGreeting.Value");
+				// Act
+				string greeting = FindValue(resources, "LocalizableStrings.SharedGreeting.Value");
 
-			// Assert
-			source.Should().Contain("Owns package-level backend",
-				because: "the schema must explain its narrow ownership role");
-			greeting.Should().Be("Hello from the localization lab",
-				because: "package-level backend code needs a concrete localizable value");
+				// Assert
+				JsonElement schema = metadata.RootElement.GetProperty("MetaData").GetProperty("Schema");
+				var declarations = schema.GetProperty("B2").EnumerateArray().ToArray();
+				var declaredNames = declarations.Select(item => item.GetProperty("A2").GetString()).ToArray();
+				declaredNames.Should().Contain(new[] { "SharedGreeting", "DefaultOnly" },
+					because: "the normal backend values must be discoverable and editable in the designer");
+				foreach (JsonElement item in declarations) {
+					item.GetProperty("A3").GetString().Should().Be(schema.GetProperty("UId").GetString(), because: "these declarations originate in this schema");
+					item.GetProperty("A4").GetString().Should().Be(schema.GetProperty("UId").GetString(), because: "these declarations are modified in this schema");
+					item.GetProperty("A5").GetString().Should().Be(schema.GetProperty("A5").GetString(), because: "these declarations belong to the lab package");
+				}
+				greeting.Should().Be("Hello from the localization lab",
+					because: "package-level backend code needs a concrete localizable value");
+			}
 		}
 
 		[Test]
@@ -56,7 +66,7 @@ namespace AtfLocalizationLab.Tests
 				because: "the page resource must remain with the page schema");
 		}
 
-		[TestCase("AtfLocalizationLabMessages.SourceCode", "LocalizableStrings.DefaultOnly.Value")]
+		[TestCase("UsrAtfLocalizationLabMessages.SourceCode", "LocalizableStrings.DefaultOnly.Value")]
 		[TestCase("UsrAtfLocalizationLabPage.ClientUnit", "LocalizableStrings.PageDefaultOnly.Value")]
 		[Description("Default-only values are deliberately absent from the secondary culture.")]
 		public void DefaultOnlyValue_IsAbsentFromSpanish(string resourceFolder, string key)

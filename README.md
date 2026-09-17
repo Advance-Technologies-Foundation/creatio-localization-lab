@@ -19,12 +19,53 @@ The verified acceptance path targets Creatio .NET 8 with the `dev-n8` configurat
 
 Put a localizable value on the schema that renders or consumes it:
 
-- `AtfLocalizationLabMessages` is a source-code schema for backend values that have no more natural owner.
+- `UsrAtfLocalizationLabMessages` is a source-code schema for backend values that have no more natural owner.
 - `UsrAtfLocalizationLabPage` owns the values rendered by that Freedom UI page.
 
 The backend schema is not a package-wide localization registry. Page, process, object, and other schema-specific values belong to their respective schemas.
 
-Persisted resource item names use `LocalizableStrings.<Key>.Value`. Freedom UI metadata declares each localizable value and the page binds it as `$Resources.Strings.<Key>`.
+Persisted resource item names use `LocalizableStrings.<Key>.Value`. Register normal backend strings in
+the source-code schema's `B2` collection as well as its resource XML, so developers can discover and
+edit them in the designer. Freedom UI metadata declares each localizable value and the page binds it
+as `$Resources.Strings.<Key>`.
+
+## Backend designer registration
+
+`SharedGreeting` and `DefaultOnly` are the normal backend examples. Each has a stable `UId` and an
+entry in `Schemas/UsrAtfLocalizationLabMessages/metadata.json` under `MetaData.Schema.B2`:
+
+```json
+{
+  "UId": "49c56e04-61b2-4fbc-8261-64e881b605a1",
+  "A2": "SharedGreeting",
+  "A3": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+  "A4": "0e340e9b-6657-44da-8f3a-a29ea6344519",
+  "A5": "d6014583-bb03-43a0-a62f-b3185a12ef04"
+}
+```
+
+`A2` is the key, `A3`/`A4` identify its creating/modifying schemas, and `A5` identifies its originating
+package. These two schema IDs coincide for these newly declared items; preserve inherited item
+identities when working with replacement schemas. Text belongs in `resource.en-US.xml` and
+`resource.es-ES.xml`, not in this metadata entry. The schema owns resources without needing an empty
+CLR class in its C# body.
+
+Open the `UsrAtfLocalizationLabMessages` source-code schema in Configuration and inspect **Localizable
+strings**. Both normal keys must be visible. Save and reopen the schema, then verify English/Spanish
+values and the intentional Spanish omission for `DefaultOnly`. A backend lookup alone is not proof
+of designer integration.
+
+The extra `RegisteredProbe`, `XmlOnlyProbe`, and `MetadataOnlyProbe` keys are **diagnostics**, not
+recommended application patterns. They distinguish declarations from resource storage:
+
+| Diagnostic | Backend lookup | Designer |
+| --- | --- | --- |
+| B2 + XML | Translated value | Listed with values |
+| XML only | Translated value | Not listed |
+| B2 only | null | Listed without values |
+
+Do not use `XmlOnlyProbe` as a template for normal strings. Its deliberately incomplete declaration
+tests a platform boundary; preservation through designer editing is not its contract.
 
 ## Backend abstraction and web-service boundary
 
@@ -74,6 +115,7 @@ For live tests, synchronize the package into an exclusively owned development en
 
 ```powershell
 clio link-from-repository -e <environment> --repoPath .\packages --packages AtfLocalizationLab
+clio unlock-package AtfLocalizationLab -e <environment>
 clio pkg-to-db -e <environment>
 clio compile-configuration -e <environment>
 clio restart-web-app -e <environment> --wait-ready
@@ -81,6 +123,14 @@ clio clear-redis-db -e <environment>
 $env:CLIO_ENVIRONMENT = "<environment>"
 dotnet test .\tests\AtfLocalizationLab\AtfLocalizationLab.Tests.csproj -c dev-n8 --filter "Category=Creatio"
 ```
+
+On a fresh instance, activate Spanish (`es-ES`) in Languages before synchronizing the resources.
+For a new package that does not yet exist remotely, add `--skip-preparation` to the initial link
+command, synchronize it, then unlock it. The live category includes a native designer save/readback
+test and must run only against an exclusive, writable lab. A successful compile does not prove that
+new resources are loaded: assert distinct runtime values and follow the restart step when stale.
+
+See [backend metadata validation](docs/localizable-metadata-validation.md) for tested boundaries.
 
 ## Freedom UI result
 
@@ -96,8 +146,8 @@ Spanish shows the translated greeting and default-language fallback for the untr
 
 ## Relevant files
 
-- `packages/AtfLocalizationLab/Schemas/AtfLocalizationLabMessages`
-- `packages/AtfLocalizationLab/Resources/AtfLocalizationLabMessages.SourceCode`
+- `packages/AtfLocalizationLab/Schemas/UsrAtfLocalizationLabMessages`
+- `packages/AtfLocalizationLab/Resources/UsrAtfLocalizationLabMessages.SourceCode`
 - `packages/AtfLocalizationLab/Schemas/UsrAtfLocalizationLabPage`
 - `packages/AtfLocalizationLab/Resources/UsrAtfLocalizationLabPage.ClientUnit`
 - `packages/AtfLocalizationLab/Files/src/cs/LocalizableStrings/LocalizableStringResolver.cs`

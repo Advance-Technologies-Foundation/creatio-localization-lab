@@ -48,7 +48,7 @@ namespace AtfLocalizationLab.Tests.EntryPoints.WebServices {
 		public void Resolve_ValidRequest_DelegatesToResolver() {
 			// Arrange
 			LocalizationResolutionRequest request = new LocalizationResolutionRequest {
-				ResourceSchemaName = "AtfLocalizationLabMessages",
+				ResourceSchemaName = "UsrAtfLocalizationLabMessages",
 				ResourceItemName = "LocalizableStrings.SharedGreeting.Value",
 				CultureName = "es-ES"
 			};
@@ -75,11 +75,11 @@ namespace AtfLocalizationLab.Tests.EntryPoints.WebServices {
 		[TestCase(true, null, null, null, "Request is required.")]
 		[TestCase(false, null, "LocalizableStrings.SharedGreeting.Value", "es-ES",
 			"Resource schema name is required.")]
-		[TestCase(false, "AtfLocalizationLabMessages", null, "es-ES",
+		[TestCase(false, "UsrAtfLocalizationLabMessages", null, "es-ES",
 			"Resource item name is required.")]
-		[TestCase(false, "AtfLocalizationLabMessages", "LocalizableStrings.SharedGreeting.Value", null,
+		[TestCase(false, "UsrAtfLocalizationLabMessages", "LocalizableStrings.SharedGreeting.Value", null,
 			"Culture name is required.")]
-		[TestCase(false, "AtfLocalizationLabMessages", "LocalizableStrings.SharedGreeting.Value",
+		[TestCase(false, "UsrAtfLocalizationLabMessages", "LocalizableStrings.SharedGreeting.Value",
 			"invalid-culture", "Culture name is invalid.")]
 		[Description("Invalid transport input is rejected before the domain resolver is invoked.")]
 		public void Resolve_InvalidRequest_ReturnsBadRequest(bool requestIsNull, string resourceSchemaName,
